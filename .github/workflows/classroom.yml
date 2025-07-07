@@ -1,0 +1,85 @@
+name: Autograding Tests
+'on':
+- push
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Inputting "091234567"
+      id: inputting-091234567
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Inputting "091234567"
+        setup-command: ''
+        command: python3 regex_phone_validation/main.py
+        input: '091234567'
+        expected-output: Valid
+        comparison-method: contains
+        timeout: 10
+        max-score: 1
+    - name: Inputting "09123456789"
+      id: inputting-09123456789
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Inputting "09123456789"
+        setup-command: ''
+        command: python3 regex_phone_validation/main.py
+        input: '09123456789'
+        expected-output: Valid
+        comparison-method: contains
+        timeout: 10
+        max-score: 1
+    - name: Inputting "09123"
+      id: inputting-09123
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Inputting "09123"
+        setup-command: ''
+        command: python3 regex_phone_validation/main.py
+        input: '09123'
+        expected-output: Invalid
+        comparison-method: contains
+        timeout: 10
+        max-score: 1
+    - name: Inputting "081234567"
+      id: inputting-081234567
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Inputting "081234567"
+        setup-command: ''
+        command: python3 regex_phone_validation/main.py
+        input: '081234567'
+        expected-output: Invalid
+        comparison-method: contains
+        timeout: 10
+        max-score: 1
+    - name: Inputting "09123456a"
+      id: inputting-09123456a
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Inputting "09123456a"
+        setup-command: ''
+        command: python3 regex_phone_validation/main.py
+        input: '09123456a'
+        expected-output: Invalid
+        comparison-method: contains
+        timeout: 10
+        max-score: 1
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        INPUTTING-091234567_RESULTS: "${{steps.inputting-091234567.outputs.result}}"
+        INPUTTING-09123456789_RESULTS: "${{steps.inputting-09123456789.outputs.result}}"
+        INPUTTING-09123_RESULTS: "${{steps.inputting-09123.outputs.result}}"
+        INPUTTING-081234567_RESULTS: "${{steps.inputting-081234567.outputs.result}}"
+        INPUTTING-09123456A_RESULTS: "${{steps.inputting-09123456a.outputs.result}}"
+      with:
+        runners: inputting-091234567,inputting-09123456789,inputting-09123,inputting-081234567,inputting-09123456a
